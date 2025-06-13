@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_rumah');
             $table->foreign('id_rumah')->references('id_rumah')->on('rumah');
             $table->date('tanggal_masuk');
-            $table->date('tanggal_keluar');
+            $table->date('tanggal_keluar')->nullable();
             $table->timestamps();
         });
     }
