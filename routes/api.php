@@ -26,3 +26,12 @@ Route::get('penghuni/{id}', [PenghuniController::class, 'show']);
 Route::post('penghuni', [PenghuniController::class, 'store']);
 Route::match(['put', 'post'], 'penghuni/{id}', [PenghuniController::class, 'update']);
 Route::delete('penghuni/{id}', [PenghuniController::class, 'destroy']);
+
+Route::get('pembayaran', [PembayaranController::class, 'index']);
+Route::post('pembayaran', [PembayaranController::class, 'pembayaran']);
+Route::delete('pembayaran/{id}', [PembayaranController::class, 'destroy']);
+
+Route::get('pengeluaran', [PengeluaranController::class, 'index']);
+Route::post('pengeluaran', [PengeluaranController::class, 'pengeluaran']);
+Route::put('pengeluaran/{id}', [PengeluaranController::class, 'update']);
+Route::delete('pengeluaran/{id}', [PengeluaranController::class, 'destroy']);
