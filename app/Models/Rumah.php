@@ -8,5 +8,8 @@ class Rumah extends Model
 {
     protected $table = 'rumah';
     protected $primaryKey = 'id_rumah';
-    protected $guarded = ['id_rumah'];
+    protected $fillable = [
+        'nomor_rumah',
+        'status_rumah'
+    ];
 }
