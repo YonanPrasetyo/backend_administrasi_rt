@@ -21,3 +21,8 @@ Route::post('rumah', [RumahController::class, 'store']);
 Route::put('rumah/{id}', [RumahController::class, 'update']);
 Route::delete('rumah/{id}', [RumahController::class, 'destroy']);
 
+Route::get('penghuni', [PenghuniController::class, 'index']);
+Route::get('penghuni/{id}', [PenghuniController::class, 'show']);
+Route::post('penghuni', [PenghuniController::class, 'store']);
+Route::match(['put', 'post'], 'penghuni/{id}', [PenghuniController::class, 'update']);
+Route::delete('penghuni/{id}', [PenghuniController::class, 'destroy']);
