@@ -76,6 +76,8 @@ class RumahController extends Controller
                     return $group->first();
                 });
 
+                $jumlah_penghuni_rumah = $rumah->penghuni_rumah->where('tanggal_keluar', null)->count();
+
                 $pembayaranSatpam = $pembayaran_terakhir->get('iuran satpam');
                 $pembayaranKebersihan = $pembayaran_terakhir->get('iuran kebersihan');
 
@@ -85,7 +87,7 @@ class RumahController extends Controller
                     'id_rumah' => $rumah->id_rumah,
                     'nomor_rumah' => $rumah->nomor_rumah,
                     'status_rumah' => $rumah->status_rumah,
-                    'jumlah_penghuni_rumah' => $rumah->penghuni_rumah->count(),
+                    'jumlah_penghuni_rumah' => $jumlah_penghuni_rumah,
 
                     'status_lunas' => $status_lunas,
                     'bulan_terakhir_satpam' => $this->bulanConvert($pembayaranSatpam->bulan ?? null),
@@ -287,11 +289,19 @@ class RumahController extends Controller
                 'id_penghuni' => 'required|exists:penghuni,id_penghuni',
             ]);
 
-            $rumah = Rumah::find($id);
+            $rumah = Rumah::with('penghuni_rumah')->find($id);
             if (!$rumah) {
                 return response()->json([
                     'message' => 'rumah tidak ditemukan',
                 ],Response::HTTP_NOT_FOUND);
+            }
+
+            $jumlah_penghuni_rumah = $rumah->penghuni_rumah->where('tanggal_keluar', null)->count();
+            
+            if ($jumlah_penghuni_rumah == 1) {
+                $rumah->update([
+                    'status_rumah' => 'tidak dihuni'
+                ]);
             }
 
             PenghuniRumah::where('id_rumah', $id)

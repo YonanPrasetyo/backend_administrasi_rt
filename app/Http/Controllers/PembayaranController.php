@@ -29,7 +29,7 @@ class PembayaranController extends Controller
     public function index()
     {
         try {
-            $pembayaran = Pembayaran::with('penghuni', 'rumah')->get()->map(function ($pembayaran) {
+            $pembayaran = Pembayaran::with('penghuni', 'rumah')->orderByDesc('created_at')->orderByDesc('bulan')->get()->map(function ($pembayaran) {
                 return [
                     'id_pembayaran' => $pembayaran->id_pembayaran,
                     'tahun' => $pembayaran->tahun,

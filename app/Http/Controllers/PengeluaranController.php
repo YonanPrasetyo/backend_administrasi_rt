@@ -11,7 +11,7 @@ class PengeluaranController extends Controller
     public function index()
     {
         try {
-            $pengeluaran = Pengeluaran::all();
+            $pengeluaran = Pengeluaran::orderByDesc('tanggal')->get();
             return response()->json([
                 'message' => 'successfully fetch data',
                 'data' => $pengeluaran
