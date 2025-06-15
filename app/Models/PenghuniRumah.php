@@ -17,6 +17,6 @@ class PenghuniRumah extends Model
 
     public function penghuni()
     {
-        return $this->hasMany(Penghuni::class, 'id_penghuni', 'id_penghuni');
+        return $this->hasOne(Penghuni::class, 'id_penghuni', 'id_penghuni');
     }
 }

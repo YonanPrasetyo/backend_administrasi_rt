@@ -12,14 +12,26 @@ class RumahController extends Controller
     public function index()
     {
         try {
-            $rumah = Rumah::with('penghuni_rumah')->get()->map(function ($rumah) {
+            $rumah = Rumah::with([
+                                'penghuni_rumah',
+                                'pembayaran' => function ($query) {
+                                    $query->orderByDesc('tahun')
+                                          ->orderByDesc('bulan')
+                                          ->limit(1);
+                                }
+                            ])
+                            ->get()
+                            ->map(function ($rumah) {
                 return [
                     'id_rumah' => $rumah->id_rumah,
                     'nomor_rumah' => $rumah->nomor_rumah,
                     'status_rumah' => $rumah->status_rumah,
-                    'jumlah_penghuni_rumah' => $rumah->penghuni_rumah->count()
+                    'jumlah_penghuni_rumah' => $rumah->penghuni_rumah->count(),
+                    'bulan_pembayaran_terakhir' => $rumah->pembayaran[0]->bulan ?? null,
+                    'tahun_pembayaran_terakhir' => $rumah->pembayaran[0]->tahun ?? null
                 ];
             });
+
 
             return response()->json([
                 'message' => 'successfully fetch data',
