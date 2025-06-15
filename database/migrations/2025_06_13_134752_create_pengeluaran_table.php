@@ -16,7 +16,7 @@ return new class extends Migration
             $table->date('tanggal');
             $table->string('nama');
             $table->integer('jumlah');
-            $table->string('keterangan');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

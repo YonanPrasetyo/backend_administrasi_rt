@@ -34,6 +34,7 @@ Route::post('pembayaran', [PembayaranController::class, 'pembayaran']);
 Route::delete('pembayaran/{id}', [PembayaranController::class, 'destroy']);
 
 Route::get('pengeluaran', [PengeluaranController::class, 'index']);
-Route::post('pengeluaran', [PengeluaranController::class, 'pengeluaran']);
+Route::get('pengeluaran/{id}', [PengeluaranController::class, 'show']);
+Route::post('pengeluaran', [PengeluaranController::class, 'store']);
 Route::put('pengeluaran/{id}', [PengeluaranController::class, 'update']);
 Route::delete('pengeluaran/{id}', [PengeluaranController::class, 'destroy']);

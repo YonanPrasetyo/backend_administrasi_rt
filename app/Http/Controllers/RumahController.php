@@ -66,7 +66,15 @@ class RumahController extends Controller
     public function show($id)
     {
         try {
-            $rumah = Rumah::with('penghuni_rumah.penghuni')->find($id);
+            $rumah = Rumah::with([
+                            'penghuni_rumah.penghuni',
+                            'pembayaran' => function ($query) {
+                                $query->orderByDesc('tahun')
+                                      ->orderByDesc('bulan')
+                                      ->limit(1);
+                                }
+                            ])
+                        ->find($id);
 
             if (!$rumah) {
                 return response()->json([
@@ -81,7 +89,7 @@ class RumahController extends Controller
                     'tanggal_masuk' => $pr->tanggal_masuk,
                     'tanggal_keluar' => $pr->tanggal_keluar,
                     'nama_lengkap' => $pr->penghuni->nama_lengkap,
-                    'status_penghuni' => $pr->penghuni->status_penghuni
+                    'status_penghuni' => $pr->penghuni->status_penghuni,
                 ];
             });
 
@@ -89,7 +97,9 @@ class RumahController extends Controller
                 'id_rumah' => $rumah->id_rumah,
                 'nomor_rumah' => $rumah->nomor_rumah,
                 'status_rumah' => $rumah->status_rumah,
-                'penghuni_rumah' => $penghuniRumah
+                'penghuni_rumah' => $penghuniRumah,
+                'bulan_pembayaran_terakhir' => $this->bulanConvert($rumah->pembayaran[0]->bulan ?? null),
+                'tahun_pembayaran_terakhir' => $rumah->pembayaran[0]->tahun ?? null
             ];
 
             return response()->json([

@@ -23,14 +23,36 @@ class PengeluaranController extends Controller
         }
     }
 
-    public function pengeluaran(Request $request)
+    public function show($id)
+    {
+        try {
+            $pengeluaran = Pengeluaran::find($id);
+
+            if (!$pengeluaran) {
+                return response()->json([
+                    'message' => 'pengeluaran tidak ditemukan',
+                ],Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json([
+                'message' => 'successfully fetch data',
+                'data' => $pengeluaran
+            ],Response::HTTP_OK);
+        }catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ],Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function store(Request $request)
     {
         try {
             $validated = $request->validate([
                 'tanggal' => 'required|date',
                 'nama' => 'required|string',
                 'jumlah' => 'required|integer',
-                'keterangan' => 'required|string',
+                'keterangan' => 'nullable|string',
             ]);
 
             $pengeluaran = Pengeluaran::create($validated);
@@ -52,7 +74,7 @@ class PengeluaranController extends Controller
                 'tanggal' => 'required|date',
                 'nama' => 'required|string',
                 'jumlah' => 'required|integer',
-                'keterangan' => 'required|string',
+                'keterangan' => 'nullable|string',
             ]);
 
             $pengeluaran = Pengeluaran::find($id);
