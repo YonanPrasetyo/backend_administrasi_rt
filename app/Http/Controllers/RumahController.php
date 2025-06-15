@@ -9,6 +9,25 @@ use App\Models\PenghuniRumah;
 
 class RumahController extends Controller
 {
+    public function bulanConvert($bulan)
+    {
+        $bulanText = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember',
+        ];
+        return $bulanText[(int)$bulan] ?? null;
+    }
+
     public function index()
     {
         try {
@@ -27,7 +46,7 @@ class RumahController extends Controller
                     'nomor_rumah' => $rumah->nomor_rumah,
                     'status_rumah' => $rumah->status_rumah,
                     'jumlah_penghuni_rumah' => $rumah->penghuni_rumah->count(),
-                    'bulan_pembayaran_terakhir' => $rumah->pembayaran[0]->bulan ?? null,
+                    'bulan_pembayaran_terakhir' => $this->bulanConvert($rumah->pembayaran[0]->bulan ?? null),
                     'tahun_pembayaran_terakhir' => $rumah->pembayaran[0]->tahun ?? null
                 ];
             });
