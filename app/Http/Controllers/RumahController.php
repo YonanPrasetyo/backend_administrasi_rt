@@ -80,8 +80,8 @@ class RumahController extends Controller
                     'id_penghuni' => $pr->id_penghuni,
                     'tanggal_masuk' => $pr->tanggal_masuk,
                     'tanggal_keluar' => $pr->tanggal_keluar,
-                    'nama_lengkap' => $pr->penghuni[0]->nama_lengkap,
-                    'status_penghuni' => $pr->penghuni[0]->status_penghuni
+                    'nama_lengkap' => $pr->penghuni->nama_lengkap,
+                    'status_penghuni' => $pr->penghuni->status_penghuni
                 ];
             });
 
