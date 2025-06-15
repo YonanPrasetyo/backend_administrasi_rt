@@ -13,17 +13,15 @@ class PenghuniController extends Controller
     public function index()
     {
         try {
-            $penghuni = Penghuni::all()->map(function ($penghuni) {
+            $penghuni = Penghuni::with('penghuni_rumah')->get()->map(function ($penghuni) {
                 return [
                     'id_penghuni' => $penghuni->id_penghuni,
                     'nama_lengkap' => $penghuni->nama_lengkap,
-                    'foto_ktp_filename' => $penghuni->foto_ktp,
-                    'foto_ktp_url' => $penghuni->foto_ktp_url,
                     'status_penghuni' => $penghuni->status_penghuni,
                     'nomor_telepon' => $penghuni->nomor_telepon,
                     'status_nikah' => $penghuni->status_nikah,
-                    'created_at' => $penghuni->created_at,
-                    'updated_at' => $penghuni->updated_at
+                    'tanggal_masuk' => $penghuni->penghuni_rumah->tanggal_masuk ?? null,
+                    'tanggal_keluar' => $penghuni->penghuni_rumah->tanggal_keluar ?? null
                 ];
             });
 

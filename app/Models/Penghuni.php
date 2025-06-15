@@ -26,4 +26,14 @@ class Penghuni extends Model
 
         $this->attributes['foto_ktp'] = $value;
     }
+
+    public function penghuni_rumah()
+    {
+        return $this->belongsTo(PenghuniRumah::class, 'id_penghuni', 'id_penghuni');
+    }
+
+    public function pembayaran()
+    {
+        return $this->hasMany(Pembayaran::class, 'id_penghuni');
+    }
 }

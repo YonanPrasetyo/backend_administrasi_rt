@@ -20,6 +20,8 @@ Route::get('rumah/{id}', [RumahController::class, 'show']);
 Route::post('rumah', [RumahController::class, 'store']);
 Route::put('rumah/{id}', [RumahController::class, 'update']);
 Route::delete('rumah/{id}', [RumahController::class, 'destroy']);
+Route::post('rumah/{id}/tambah_penghuni', [RumahController::class, 'add_penghuni']);
+Route::post('rumah/{id}/hapus_penghuni', [RumahController::class, 'remove_penghuni']);
 
 Route::get('penghuni', [PenghuniController::class, 'index']);
 Route::get('penghuni/{id}', [PenghuniController::class, 'show']);

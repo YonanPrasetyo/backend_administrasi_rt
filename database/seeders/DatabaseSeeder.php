@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             RumahSeeder::class,
             PenghuniSeeder::class,
             PenghuniRumahSeeder::class,
+            PembayaranSeeder::class,
+            PengeluaranSeeder::class
         ]);
     }
 }

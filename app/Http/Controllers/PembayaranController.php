@@ -8,10 +8,39 @@ use App\Models\Pembayaran;
 
 class PembayaranController extends Controller
 {
+    public function bulanConvert($bulan)
+    {
+        $bulanText = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember',
+        ];
+        return $bulanText[$bulan];
+    }
     public function index()
     {
         try {
-            $pembayaran = Pembayaran::all();
+            $pembayaran = Pembayaran::with('penghuni', 'rumah')->get()->map(function ($pembayaran) {
+                return [
+                    'id_pembayaran' => $pembayaran->id_pembayaran,
+                    'tahun' => $pembayaran->tahun,
+                    'bulan' => $this->bulanConvert($pembayaran->bulan),
+                    'jenis' => $pembayaran->jenis,
+                    'total' => $pembayaran->total,
+                    'tanggal' => $pembayaran->tanggal,
+                    'penghuni' => $pembayaran->penghuni->nama_lengkap,
+                    'nomor_rumah' => $pembayaran->rumah->nomor_rumah
+                ];
+            });
             return response()->json([
                 'message' => 'successfully fetch data',
                 'data' => $pembayaran
