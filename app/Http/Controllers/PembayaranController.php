@@ -67,14 +67,20 @@ class PembayaranController extends Controller
 
             $validated['total'] = $validated['jenis'] == 'iuran satpam' ? 100000 : 15000;
 
-            for ($i = 0; $i < $validated['total_bulan']; $i++) {
-                $validated['bulan'] = $validated['bulan'] + 1;
+            $i = 0;
+            do {
+                $pembayaran = Pembayaran::create($validated);
+
+                $validated['bulan']++;
+
                 if ($validated['bulan'] > 12) {
-                    $validated['tahun'] = $validated['tahun'] + 1;
+                    $validated['tahun']++;
                     $validated['bulan'] = 1;
                 }
-                $pembayaran = Pembayaran::create($validated);
-            }
+
+                $i++;
+            } while ($i < $validated['total_bulan']);
+
             return response()->json([
                 'message' => 'successfully add data',
                 'data' => $pembayaran

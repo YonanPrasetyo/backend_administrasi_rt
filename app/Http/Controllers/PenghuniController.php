@@ -13,7 +13,14 @@ class PenghuniController extends Controller
     public function index()
     {
         try {
-            $penghuni = Penghuni::with('penghuni_rumah')->get()->map(function ($penghuni) {
+            $penghuni = Penghuni::
+            whereDoesntHave('penghuni_rumah') // Tidak punya penghuni_rumah
+            ->orWhereHas('penghuni_rumah', function ($query) {
+                $query->whereNull('tanggal_keluar'); // Punya, tapi belum keluar
+            })
+            ->with('penghuni_rumah.rumah')
+            ->get()
+            ->map(function ($penghuni) {
                 return [
                     'id_penghuni' => $penghuni->id_penghuni,
                     'nama_lengkap' => $penghuni->nama_lengkap,
@@ -21,9 +28,12 @@ class PenghuniController extends Controller
                     'nomor_telepon' => $penghuni->nomor_telepon,
                     'status_nikah' => $penghuni->status_nikah,
                     'tanggal_masuk' => $penghuni->penghuni_rumah->tanggal_masuk ?? null,
-                    'tanggal_keluar' => $penghuni->penghuni_rumah->tanggal_keluar ?? null
+                    'tanggal_keluar' => $penghuni->penghuni_rumah->tanggal_keluar ?? null,
+                    'nomor_rumah' => $penghuni->penghuni_rumah->rumah->nomor_rumah ?? null
                 ];
             });
+
+
 
             return response()->json([
                 'message' => 'successfully fetch data',
@@ -111,11 +121,11 @@ class PenghuniController extends Controller
     {
         try {
             $validated = $request->validate([
-                'nama_lengkap' => 'sometimes|string',
-                'foto_ktp' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
-                'status_penghuni' => 'sometimes|in:kontrak,tetap',
-                'nomor_telepon' => 'sometimes|string',
-                'status_nikah' => 'sometimes|in:belum,sudah',
+                'nama_lengkap' => 'required|string',
+                'foto_ktp' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'status_penghuni' => 'required|in:kontrak,tetap',
+                'nomor_telepon' => 'required|string',
+                'status_nikah' => 'required|in:belum,sudah',
             ]);
 
             $penghuni = Penghuni::find($id);
@@ -134,6 +144,8 @@ class PenghuniController extends Controller
                 $foto_ktp_filename = 'ktp_' . str_replace(' ', '_', $request->nama_lengkap) . '_' . time() . '_' . uniqid() . '.' . $foto_ktp->getClientOriginalExtension();
                 $path = $request->file('foto_ktp')->storeAs('ktp', $foto_ktp_filename, 'public');
                 $validated['foto_ktp'] = $foto_ktp_filename;
+            }else {
+                $validated['foto_ktp'] = $penghuni->foto_ktp;
             }
 
             $penghuni->update($validated);

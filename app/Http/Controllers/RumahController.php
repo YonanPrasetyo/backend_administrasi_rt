@@ -28,6 +28,35 @@ class RumahController extends Controller
         return $bulanText[(int)$bulan] ?? null;
     }
 
+    public function statusLunas($satpam, $kebersihan, $status_rumah)
+    {
+        if ($status_rumah == "tidak dihuni") {
+            return "tidak aktif";
+        }
+
+        $bulan = date('n');
+        $tahun = date('Y');
+
+        $bulan_satpam = $satpam->bulan ?? null;
+        $tahun_satpam = $satpam->tahun ?? null;
+        $bulan_kebersihan = $kebersihan->bulan ?? null;
+        $tahun_kebersihan = $kebersihan->tahun ?? null;
+
+        if ($bulan_satpam == null || $tahun_satpam == null || $bulan_kebersihan == null || $tahun_kebersihan == null) {
+            return "belum lunas";
+        }
+
+        // satpam lunas
+        if (($bulan_satpam >= $bulan && $tahun_satpam >= $tahun) || $tahun_satpam > $tahun) {
+            // kebersihan lunas
+            if (($bulan_kebersihan >= $bulan && $tahun_kebersihan >= $tahun) || $tahun_kebersihan > $tahun) {
+                return "lunas";
+            }
+        }
+
+        return "belum lunas";
+    }
+
     public function index()
     {
         try {
@@ -35,19 +64,35 @@ class RumahController extends Controller
                                 'penghuni_rumah',
                                 'pembayaran' => function ($query) {
                                     $query->orderByDesc('tahun')
-                                          ->orderByDesc('bulan')
-                                          ->limit(1);
+                                          ->orderByDesc('bulan');
                                 }
                             ])
                             ->get()
                             ->map(function ($rumah) {
+
+                $pembayaran_terakhir = $rumah->pembayaran
+                ->groupBy('jenis')
+                ->map(function ($group) {
+                    return $group->first();
+                });
+
+                $pembayaranSatpam = $pembayaran_terakhir->get('iuran satpam');
+                $pembayaranKebersihan = $pembayaran_terakhir->get('iuran kebersihan');
+
+                $status_lunas = $this->statusLunas($pembayaranSatpam, $pembayaranKebersihan, $rumah->status_rumah);
+
                 return [
                     'id_rumah' => $rumah->id_rumah,
                     'nomor_rumah' => $rumah->nomor_rumah,
                     'status_rumah' => $rumah->status_rumah,
                     'jumlah_penghuni_rumah' => $rumah->penghuni_rumah->count(),
-                    'bulan_pembayaran_terakhir' => $this->bulanConvert($rumah->pembayaran[0]->bulan ?? null),
-                    'tahun_pembayaran_terakhir' => $rumah->pembayaran[0]->tahun ?? null
+
+                    'status_lunas' => $status_lunas,
+                    'bulan_terakhir_satpam' => $this->bulanConvert($pembayaranSatpam->bulan ?? null),
+                    'tahun_terakhir_satpam' => $pembayaranSatpam->tahun ?? null,
+
+                    'bulan_terakhir_kebersihan' => $this->bulanConvert($pembayaranKebersihan->bulan ?? null),
+                    'tahun_terakhir_kebersihan' => $pembayaranKebersihan->tahun ?? null,
                 ];
             });
 
@@ -70,11 +115,21 @@ class RumahController extends Controller
                             'penghuni_rumah.penghuni',
                             'pembayaran' => function ($query) {
                                 $query->orderByDesc('tahun')
-                                      ->orderByDesc('bulan')
-                                      ->limit(1);
+                                      ->orderByDesc('bulan');
                                 }
                             ])
                         ->find($id);
+
+            $pembayaran_terakhir = $rumah->pembayaran
+            ->groupBy('jenis')
+            ->map(function ($group) {
+                return $group->first();
+            });
+
+            $pembayaranSatpam = $pembayaran_terakhir->get('iuran satpam');
+            $pembayaranKebersihan = $pembayaran_terakhir->get('iuran kebersihan');
+
+            $status_lunas = $this->statusLunas($pembayaranSatpam, $pembayaranKebersihan, $rumah->status_rumah);
 
             if (!$rumah) {
                 return response()->json([
@@ -98,8 +153,13 @@ class RumahController extends Controller
                 'nomor_rumah' => $rumah->nomor_rumah,
                 'status_rumah' => $rumah->status_rumah,
                 'penghuni_rumah' => $penghuniRumah,
-                'bulan_pembayaran_terakhir' => $this->bulanConvert($rumah->pembayaran[0]->bulan ?? null),
-                'tahun_pembayaran_terakhir' => $rumah->pembayaran[0]->tahun ?? null
+                'status_lunas' => $status_lunas,
+
+                'bulan_terakhir_satpam' => $this->bulanConvert($pembayaranSatpam->bulan ?? null),
+                'tahun_terakhir_satpam' => $pembayaranSatpam->tahun ?? null,
+
+                'bulan_terakhir_kebersihan' => $this->bulanConvert($pembayaranKebersihan->bulan ?? null),
+                'tahun_terakhir_kebersihan' => $pembayaranKebersihan->tahun ?? null,
             ];
 
             return response()->json([
