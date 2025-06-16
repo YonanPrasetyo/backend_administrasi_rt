@@ -17,6 +17,7 @@ Route::post('test', function() {
 });
 
 Route::get('dashboard', [DashboardController::class, 'index']);
+Route::get('laporan', [DashboardController::class, 'laporan']);
 
 Route::get('rumah', [RumahController::class, 'index']);
 Route::get('rumah/{id}', [RumahController::class, 'show']);
