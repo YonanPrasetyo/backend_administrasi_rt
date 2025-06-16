@@ -29,7 +29,7 @@ class Penghuni extends Model
 
     public function penghuni_rumah()
     {
-        return $this->belongsTo(PenghuniRumah::class, 'id_penghuni', 'id_penghuni');
+        return $this->hasOne(PenghuniRumah::class, 'id_penghuni', 'id_penghuni');
     }
 
     public function pembayaran()

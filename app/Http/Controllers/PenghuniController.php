@@ -49,7 +49,7 @@ class PenghuniController extends Controller
     public function show($id)
     {
         try {
-            $penghuni = Penghuni::find($id);
+            $penghuni = Penghuni::with('penghuni_rumah.rumah')->find($id);
 
             if (!$penghuni) {
                 return response()->json([
@@ -59,17 +59,7 @@ class PenghuniController extends Controller
 
             return response()->json([
                 'message' => 'successfully fetch data',
-                'data' => [
-                    'id_penghuni' => $penghuni->id_penghuni,
-                    'nama_lengkap' => $penghuni->nama_lengkap,
-                    'foto_ktp_filename' => $penghuni->foto_ktp,
-                    'foto_ktp_url' => $penghuni->foto_ktp_url,
-                    'status_penghuni' => $penghuni->status_penghuni,
-                    'nomor_telepon' => $penghuni->nomor_telepon,
-                    'status_nikah' => $penghuni->status_nikah,
-                    'created_at' => $penghuni->created_at,
-                    'updated_at' => $penghuni->updated_at
-                ]
+                'data' => $penghuni
             ],Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
