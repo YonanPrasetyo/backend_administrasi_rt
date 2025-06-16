@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('penghuni_rumah', function (Blueprint $table) {
             $table->id('id_penghuni_rumah');
             $table->unsignedBigInteger('id_penghuni');
-            $table->foreign('id_penghuni')->references('id_penghuni')->on('penghuni');
+            $table->foreign('id_penghuni')->references('id_penghuni')->on('penghuni')->onDelete('cascade');
             $table->unsignedBigInteger('id_rumah');
-            $table->foreign('id_rumah')->references('id_rumah')->on('rumah');
+            $table->foreign('id_rumah')->references('id_rumah')->on('rumah')->onDelete('cascade');
             $table->date('tanggal_masuk');
             $table->date('tanggal_keluar')->nullable();
             $table->timestamps();
