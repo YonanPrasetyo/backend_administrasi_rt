@@ -6,6 +6,7 @@ use App\Http\Controllers\RumahController;
 use App\Http\Controllers\PenghuniController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PengeluaranController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -14,6 +15,8 @@ Route::get('/user', function (Request $request) {
 Route::post('test', function() {
     return response()->json(['message' => 'POST works']);
 });
+
+Route::get('dashboard', [DashboardController::class, 'index']);
 
 Route::get('rumah', [RumahController::class, 'index']);
 Route::get('rumah/{id}', [RumahController::class, 'show']);

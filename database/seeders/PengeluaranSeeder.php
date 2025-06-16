@@ -18,11 +18,11 @@ class PengeluaranSeeder extends Seeder
         $end = Carbon::create(2025, 5, 1);
 
         $pengeluaranTambahan = [
-            ['nama' => 'Perbaikan Jalan', 'min' => 1000000, 'max' => 5000000],
+            ['nama' => 'Perbaikan Jalan', 'min' => 500000, 'max' => 2000000],
             ['nama' => 'Perbaikan Selokan', 'min' => 500000, 'max' => 3000000],
-            ['nama' => 'Renovasi Pos Satpam', 'min' => 2000000, 'max' => 8000000],
-            ['nama' => 'Pembelian Alat Kebersihan', 'min' => 300000, 'max' => 1000000],
-            ['nama' => 'Pengaspalan Ulang Jalan RT', 'min' => 5000000, 'max' => 15000000],
+            ['nama' => 'Renovasi Pos Satpam', 'min' => 1000000, 'max' => 3000000],
+            ['nama' => 'Pembelian Alat Kebersihan', 'min' => 50000, 'max' => 500000],
+            ['nama' => 'Pengaspalan Ulang Jalan RT', 'min' => 1000000, 'max' => 5000000],
         ];
 
         while ($start <= $end) {
@@ -32,7 +32,7 @@ class PengeluaranSeeder extends Seeder
             DB::table('pengeluaran')->insert([
                 'tanggal' => $tanggal,
                 'nama' => 'Gaji Satpam',
-                'jumlah' => 1500000,
+                'jumlah' => 500000,
                 'keterangan' => 'Pembayaran gaji satpam bulan ' . $start->format('F Y'),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -42,7 +42,7 @@ class PengeluaranSeeder extends Seeder
             DB::table('pengeluaran')->insert([
                 'tanggal' => $tanggal,
                 'nama' => 'Token Listrik Pos Satpam',
-                'jumlah' => 200000,
+                'jumlah' => 10000,
                 'keterangan' => 'Pembelian token listrik untuk pos satpam bulan ' . $start->format('F Y'),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -50,7 +50,7 @@ class PengeluaranSeeder extends Seeder
 
             // Pengeluaran tambahan acak (tidak muncul tiap bulan)
             foreach ($pengeluaranTambahan as $item) {
-                if (rand(1, 100) <= 10) { // 33%
+                if (rand(1, 100) <= 5) { // 5%
                     DB::table('pengeluaran')->insert([
                         'tanggal' => $start->copy()->day(rand(10, 25))->toDateString(),
                         'nama' => $item['nama'],
