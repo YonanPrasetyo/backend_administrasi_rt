@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Pembayaran;
+use App\Models\Rumah;
 
 class PembayaranController extends Controller
 {
@@ -111,6 +112,45 @@ class PembayaranController extends Controller
             return response()->json([
                 'message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function history($id)
+    {
+        try {
+            $rumah = Rumah::where('id_rumah', $id)->first();
+
+            if (!$rumah) {
+                return response()->json([
+                    'message' => 'rumah tidak ditemukan',
+                ],Response::HTTP_NOT_FOUND);
+            }
+
+            $history = Pembayaran::where('id_rumah', $id)->orderByDesc('created_at')->get()->map(function ($pembayaran) {
+                return [
+                    'id_pembayaran' => $pembayaran->id_pembayaran,
+                    'id_rumah' => $pembayaran->id_rumah,
+                    'tahun' => $pembayaran->tahun,
+                    'bulan' => $this->bulanConvert($pembayaran->bulan),
+                    'jenis' => $pembayaran->jenis,
+                    'total' => $pembayaran->total,
+                    'tanggal' => $pembayaran->tanggal,
+                ];
+            });
+
+
+
+            return response()->json([
+                'message' => 'successfully fetch data',
+                'data' => [
+                    'rumah' => $rumah,
+                    'history' => $history
+                ]
+            ],Response::HTTP_OK);
+        }catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ],Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

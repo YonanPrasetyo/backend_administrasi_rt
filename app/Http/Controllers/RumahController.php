@@ -297,7 +297,7 @@ class RumahController extends Controller
             }
 
             $jumlah_penghuni_rumah = $rumah->penghuni_rumah->where('tanggal_keluar', null)->count();
-            
+
             if ($jumlah_penghuni_rumah == 1) {
                 $rumah->update([
                     'status_rumah' => 'tidak dihuni'
