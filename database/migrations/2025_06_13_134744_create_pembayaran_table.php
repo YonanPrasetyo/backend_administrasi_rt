@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->id('id_pembayaran');
             $table->unsignedBigInteger('id_penghuni');
-            $table->foreign('id_penghuni')->references('id_penghuni')->on('penghuni');
+            $table->foreign('id_penghuni')->references('id_penghuni')->on('penghuni')->onDelete('cascade');
             $table->unsignedBigInteger('id_rumah');
-            $table->foreign('id_rumah')->references('id_rumah')->on('rumah');
+            $table->foreign('id_rumah')->references('id_rumah')->on('rumah')->onDelete('cascade');
             $table->year('tahun');
             $table->enum('bulan', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
             $table->enum('jenis', ['iuran satpam', 'iuran kebersihan']);
