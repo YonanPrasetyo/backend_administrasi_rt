@@ -59,7 +59,18 @@ class PenghuniController extends Controller
 
             return response()->json([
                 'message' => 'successfully fetch data',
-                'data' => $penghuni
+                'data' => [
+                    'id_penghuni' => $penghuni->id_penghuni,
+                    'nama_lengkap' => $penghuni->nama_lengkap,
+                    'status_penghuni' => $penghuni->status_penghuni,
+                    'nomor_telepon' => $penghuni->nomor_telepon,
+                    'status_nikah' => $penghuni->status_nikah,
+                    'tanggal_masuk' => $penghuni->penghuni_rumah->tanggal_masuk ?? null,
+                    'tanggal_keluar' => $penghuni->penghuni_rumah->tanggal_keluar ?? null,
+                    'nomor_rumah' => $penghuni->penghuni_rumah->rumah->nomor_rumah ?? null,
+                    'foto_ktp_filename' => $penghuni->foto_ktp,
+                    'foto_ktp_url' => $penghuni->foto_ktp_url
+                ]
             ],Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
