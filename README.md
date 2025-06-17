@@ -27,7 +27,12 @@ php artisan db:seed
 php artisan storage:link
 ```
 
-6. Jalankan Aplikasi
+6. Generate Key
+```bash
+php artisan key:generate
+```
+
+7. Jalankan Aplikasi
 ```bash
 php artisan serve
 ```
